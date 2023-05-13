@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-	<title>Terreno 3D</title>
+	<title>terra.js</title>
 	<style>
 		canvas {
 			border: 1px solid black;
@@ -9,7 +9,7 @@
 	</style>
 </head>
 <body>
-	<canvas id="canvas" width="400" height="400"></canvas>
+	<canvas id="canvas" width="800" height="600"></canvas>
 	<script>
 		var canvas = document.getElementById('canvas');
 		var context = canvas.getContext('2d');
@@ -18,7 +18,7 @@
 		var minHeight = -100;
 		var offsetX = 0;
 		var offsetY = 0;
-		var frequency = 0.03;
+		var frequency = 0.01;
 
 		function update() {
 			offsetX += 0.5;

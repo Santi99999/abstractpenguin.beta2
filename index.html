@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>terra.js</title>
+	<style>
+		canvas {
+			border: 1px solid black;
+		}
+	</style>
+</head>
+<body>
+	<canvas id="canvas" width="400" height="400"></canvas>
+	<script>
+		var canvas = document.getElementById('canvas');
+		var context = canvas.getContext('2d');
+		var imageData = context.getImageData(0, 0, canvas.width, canvas.height);
+		var data = imageData.data;
+
+		for (var x = 0; x < canvas.width; x++) {
+			for (var y = 0; y < canvas.height; y++) {
+				var index = (y * canvas.width + x) * 4;
+
+				// Calcular la altura del terreno basada en los valores RGB
+				var r = data[index];
+				var g = data[index + 1];
+				var b = data[index + 2];
+				var height = (r + g + b) / 3;
+
+				// Dibujar el píxel en el canvas
+				var color = 'rgb(' + r + ',' + g + ',' + b + ')';
+				context.fillStyle = color;
+				context.fillRect(x, y, 1, 1);
+
+				// Ajustar la altura del terreno basada en los valores RGB
+				var maxHeight = 255 * 3;
+				var minHeight = 0;
+				var adjustedHeight = (height - minHeight) / (maxHeight - minHeight) * 100;
+
+				// Dibujar el terreno
+				context.beginPath();
+				context.moveTo(x, y);
+				context.lineTo(x + 1, y);
+				context.lineTo(x + 1, y + adjustedHeight);
+				context.lineTo(x, y + adjustedHeight);
+				context.closePath();
+				context.fillStyle = color;
+				context.fill();
+			}
+		}
+	</script>
+</body>
+</html>

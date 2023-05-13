@@ -14,38 +14,42 @@
 	<script>
 		var canvas = document.getElementById('canvas');
 		var context = canvas.getContext('2d');
+		
+		// Generar una matriz 2D de colores RGB
+function generateColorArray(width, height) {
+  const colorArray = new Array(width);
+  for (let x = 0; x < width; x++) {
+    colorArray[x] = new Array(height);
+    for (let y = 0; y < height; y++) {
+      colorArray[x][y] = {
+        r: Math.floor(Math.random() * 256),
+        g: Math.floor(Math.random() * 256),
+        b: Math.floor(Math.random() * 256)
+      };
+    }
+  }
+  return colorArray;
+}
 
-		var maxHeight = 100;
-		var minHeight = -100;
-		var offsetX = 0;
-		var offsetY = 0;
-		var frequency = 0.03;
+// Representar la matriz de colores en un canvas
+function renderTerrain() {
+  const canvas = document.getElementById('terrain');
+  const ctx = canvas.getContext('2d');
+  const width = canvas.width;
+  const height = canvas.height;
 
-		function update() {
-			offsetX += 0.5;
-			offsetY += 0.5;
+  const colorArray = generateColorArray(width, height);
 
-			var imageData = context.getImageData(0, 0, canvas.width, canvas.height);
-			var data = imageData.data;
+  for (let x = 0; x < width; x++) {
+    for (let y = 0; y < height; y++) {
+      const color = colorArray[x][y];
+      ctx.fillStyle = `rgb(${color.r}, ${color.g}, ${color.b})`;
+      ctx.fillRect(x, y, 1, 1);
+    }
+  }
+}
 
-			for (var x = 0; x < canvas.width; x++) {
-				for (var y = 0; y < canvas.height; y++) {
-					var index = (y * canvas.width + x) * 4;
-
-					// Calcular la altura del terreno basada en la media de los tres valores RGB de cada píxel
-					var height = maxHeight * ((data[index] + data[index + 1] + data[index + 2]) / 3 / 255) + minHeight;
-
-					// Dibujar el píxel en el canvas
-					var color = 'rgb(' + data[index] + ',' + data[index + 1] + ',' + data[index + 2] + ')';
-					context.fillStyle = color;
-					context.fillRect(x, y, 1, 1);
-				}
-			}
-
-			requestAnimationFrame(update);
-		}
-
-		update();
+renderTerrain();
 	</script>
 </body>
 </html>

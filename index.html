@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-	<title>abstractpenguin.beta2</title>
+	<title>abstractpenguin.js beta</title>
 	<script>
 		window.onload = function() {
 			var canvas = document.getElementById("myCanvas");
@@ -24,29 +24,64 @@
 				// Seleccionar un color aleatorio
 				var randomColor = colors[Math.floor(Math.random() * colors.length)];
 
-				// Dibujar la forma aleatoria con el color aleatorio
-				context.beginPath();
-				switch (randomShape) {
-					case "circle":
-						context.arc(Math.random() * canvasWidth, Math.random() * canvasHeight, 10 + Math.random() * 30, 0, 2 * Math.PI);
-						break;
-					case "hexagon":
-						context.moveTo(Math.random() * canvasWidth, Math.random() * canvasHeight);
-						for (var i = 0; i < 6; i++) {
-							context.lineTo(Math.random() * canvasWidth, Math.random() * canvasHeight);
+				// Crear un ImageData para el canvas
+				var imageData = context.createImageData(canvasWidth, canvasHeight);
+
+				// Recorrer cada píxel del canvas
+				for (var x = 0; x < canvasWidth; x++) {
+					for (var y = 0; y < canvasHeight; y++) {
+						var pixelIndex = (y * canvasWidth + x) * 4;
+						var isInsideShape = false;
+
+						// Verificar si el píxel está dentro de la forma
+						switch (randomShape) {
+							case "circle":
+								var dx = x - Math.random() * canvasWidth;
+								var dy = y - Math.random() * canvasHeight;
+								isInsideShape = (dx * dx + dy * dy) < (10 + Math.random() * 30) * (10 + Math.random() * 30);
+								break;
+							case "hexagon":
+								var cx = Math.random() * canvasWidth;
+								var cy = Math.random() * canvasHeight;
+								var apothem = Math.sqrt(3) / 2 * (20 + Math.random() * 30);
+								var distanceToCenter = Math.sqrt((x - cx) * (x - cx) + (y - cy) * (y - cy));
+								isInsideShape = (distanceToCenter < apothem);
+								break;
+							case "cube":
+								var cubeX = Math.random() * canvasWidth;
+								var cubeY = Math.random() * canvasHeight;
+								var cubeWidth = 20 + Math.random() * 30;
+								var cubeHeight = 20 + Math.random() * 30;
+								isInsideShape = (x >= cubeX && x <= cubeX + cubeWidth && y >= cubeY && y <= cubeY + cubeHeight);
+								break;
+							case "triangle":
+								var ax = Math.random() * canvasWidth;
+								var ay = Math.random() * canvasHeight;
+								var bx = Math.random() * canvasWidth;
+								var by = Math.random() * canvasHeight;
+								var cx = Math.random() * canvasWidth;
+								var cy = Math.random() * canvasHeight;
+								var areaABC = Math.abs(ax * (by - cy) + bx * (cy - ay) + cx * (ay - by)) / 2
+								var areaPBC = Math.abs(x * (by - cy) + bx * (cy - y) + cx * (y - by)) / 2;
+								var areaPCA = Math.abs(ax * (y - cy) + x * (cy - ay) + cx * (ay - y)) / 2;
+								var areaPAB = Math.abs(ax * (by - y) + bx * (y - ay) + x * (ay - by)) / 2;
+								var totalArea = areaABC + areaPBC + areaPCA + areaPAB;
+								isInsideShape = (totalArea == areaABC + areaPBC + areaPCA + areaPAB);
+								break;
 						}
-						break;
-					case "cube":
-						context.rect(Math.random() * canvasWidth, Math.random() * canvasHeight, 20 + Math.random() * 30, 20 + Math.random() * 30);
-						break;
-					case "triangle":
-						context.moveTo(Math.random() * canvasWidth, Math.random() * canvasHeight);
-						context.lineTo(Math.random() * canvasWidth, Math.random() * canvasHeight);
-						context.lineTo(Math.random() * canvasWidth, Math.random() * canvasHeight);
-						break;
+
+						// Colorear el píxel si está dentro de la forma
+						if (isInsideShape) {
+							imageData.data[pixelIndex] = parseInt(randomColor.substr(1,2), 16);
+							imageData.data[pixelIndex + 1] = parseInt(randomColor.substr(3,2), 16);
+							imageData.data[pixelIndex + 2] = parseInt(randomColor.substr(5,2), 16);
+							imageData.data[pixelIndex + 3] = 255; // Alpha channel
+						}
+					}
 				}
-				context.fillStyle = randomColor;
-				context.fill();
+
+				// Dibujar el ImageData en el canvas
+				context.putImageData(imageData, 0, 0);
 			}
 
 			// Dibujar una forma aleatoria cada 100 milisegundos
@@ -56,7 +91,7 @@
 </head>
 <body>
 	<center>
-		<h1> abstractpenguin.js [beta2] </h1>
+		<h1>abstractpenguin.js</h1>
 		<canvas id="myCanvas" width="500" height="500"></canvas>
 	</center>
 </body>

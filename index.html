@@ -1,57 +1,60 @@
 <!DOCTYPE html>
 <html>
 <head>
-	<title>terra.js</title>
-	<h1>terra.js</h1> <code>Basado en abstractpenguin</code>
-	<style>
-		canvas {
-			border: 1px solid black;
+	<title>abstractpenguin.beta2</title>
+	<script>
+		window.onload = function() {
+			var canvas = document.getElementById("myCanvas");
+			var context = canvas.getContext("2d");
+
+			function drawRandomShape() {
+				// Tamaño del canvas
+				var canvasWidth = canvas.width;
+				var canvasHeight = canvas.height;
+
+				// Formas disponibles
+				var shapes = ["circle", "hexagon", "cube", "triangle"];
+
+				// Seleccionar una forma aleatoria
+				var randomShape = shapes[Math.floor(Math.random() * shapes.length)];
+
+				// Colores disponibles
+				var colors = ["red", "orange", "yellow", "green", "blue", "purple"];
+
+				// Seleccionar un color aleatorio
+				var randomColor = colors[Math.floor(Math.random() * colors.length)];
+
+				// Dibujar la forma aleatoria con el color aleatorio
+				context.beginPath();
+				switch (randomShape) {
+					case "circle":
+						context.arc(Math.random() * canvasWidth, Math.random() * canvasHeight, 20 + Math.random() * 50, 0, 2 * Math.PI);
+						break;
+					case "hexagon":
+						context.moveTo(Math.random() * canvasWidth, Math.random() * canvasHeight);
+						for (var i = 0; i < 6; i++) {
+							context.lineTo(Math.random() * canvasWidth, Math.random() * canvasHeight);
+						}
+						break;
+					case "cube":
+						context.rect(Math.random() * canvasWidth, Math.random() * canvasHeight, 50 + Math.random() * 50, 50 + Math.random() * 50);
+						break;
+					case "triangle":
+						context.moveTo(Math.random() * canvasWidth, Math.random() * canvasHeight);
+						context.lineTo(Math.random() * canvasWidth, Math.random() * canvasHeight);
+						context.lineTo(Math.random() * canvasWidth, Math.random() * canvasHeight);
+						break;
+				}
+				context.fillStyle = randomColor;
+				context.fill();
+			}
+
+			// Dibujar una forma aleatoria cada 500 milisegundos
+			setInterval(drawRandomShape, 500);
 		}
-	</style>
+	</script>
 </head>
 <body>
-	<canvas id="canvas" width="400" height="400"></canvas>
-	<script>
-		var canvas = document.getElementById('canvas');
-		var context = canvas.getContext('2d');
-		canvas.width = 400;
-		canvas.height = 400;
-		
-		// Generar una matriz 2D de colores RGB
-function generateColorArray(width, height) {
-  const colorArray = new Array(width);
-  for (let x = 0; x < width; x++) {
-    colorArray[x] = new Array(height);
-    for (let y = 0; y < height; y++) {
-      colorArray[x][y] = {
-        r: Math.floor(Math.random() * 256),
-        g: Math.floor(Math.random() * 256),
-        b: Math.floor(Math.random() * 256)
-      };
-    }
-  }
-  return colorArray;
-}
-
-// Representar la matriz de colores en un canvas
-function renderTerrain() {
-  const canvas = document.getElementById('terrain');
-  const ctx = canvas.getContext('2d');
-  const width = canvas.width;
-  const height = canvas.height;
-
-  const colorArray = generateColorArray(width, height);
-
-  for (let x = 0; x < width; x++) {
-    for (let y = 0; y < height; y++) {
-      const color = colorArray[x][y];
-      ctx.fillStyle = `rgb(${color.r}, ${color.g}, ${color.b})`;
-      ctx.fillRect(x, y, 1, 1);
-    }
-  }
-}
-
-renderTerrain();
-	</script>
+	<canvas id="myCanvas" width="500" height="500"></canvas>
 </body>
 </html>
